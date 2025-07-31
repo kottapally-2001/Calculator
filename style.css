@@ -64,3 +64,7 @@ body {
   background: #d11a2a;
   color: white;
 }
+
+.equals {
+  grid-column: span 2;
+}

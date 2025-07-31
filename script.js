@@ -8,6 +8,15 @@ const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
 const equalsButton = document.querySelector('.equals');
 const clearButton = document.querySelector('.clear');
+const deleteButton = document.querySelector('.delete');
+
+
+deleteButton.addEventListener('click', deleteNumber);
+
+function deleteNumber() {
+  display.textContent = display.textContent.toString().slice(0, -1);
+  if (display.textContent === '') display.textContent = '0';
+}
 
 numberButtons.forEach(button =>
   button.addEventListener('click', () => appendNumber(button.textContent))
@@ -25,6 +34,12 @@ function appendNumber(number) {
     resetScreen();
   }
   display.textContent += number;
+  if (display.textContent.length > 10) {
+    display.textContent = display.textContent.slice(10);
+  }
+  else {
+    display.textContent += number;
+  }
 }
 
 function resetScreen() {
@@ -60,6 +75,7 @@ function roundResult(number) {
   return Math.round(number * 1000) / 1000;
 }
 
+
 function operate(operator, a, b) {
   a = parseFloat(a);
   b = parseFloat(b);
@@ -67,9 +83,11 @@ function operate(operator, a, b) {
     case '+': return a + b;
     case '-': return a - b;
     case '*': return a * b;
-    case '/':
-      if (b === 0) return "Don't do that!";
-      return a / b;
-    default: return null;
-  }
+    case '÷': return a / b;
+    case '%': return a % b;
+    case '.':
+      if (a === 0) return b;
+      if (b === 0) return a;
+      return `${a}.${b}`;
+}
 }
