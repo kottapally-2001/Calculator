@@ -41,7 +41,6 @@ function appendNumber(number) {
     display.textContent += number;
   }
 }
-
 function resetScreen() {
   display.textContent = '';
   shouldResetScreen = false;
