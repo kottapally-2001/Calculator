@@ -10,14 +10,6 @@ const equalsButton = document.querySelector('.equals');
 const clearButton = document.querySelector('.clear');
 const deleteButton = document.querySelector('.delete');
 
-
-deleteButton.addEventListener('click', deleteNumber);
-
-function deleteNumber() {
-  display.textContent = display.textContent.toString().slice(0, -1);
-  if (display.textContent === '') display.textContent = '0';
-}
-
 numberButtons.forEach(button =>
   button.addEventListener('click', () => appendNumber(button.textContent))
 );
@@ -28,19 +20,18 @@ operatorButtons.forEach(button =>
 
 equalsButton.addEventListener('click', evaluate);
 clearButton.addEventListener('click', clear);
+deleteButton.addEventListener('click', deleteNumber);
 
 function appendNumber(number) {
-  if (display.textContent === '0' || shouldResetScreen) {
-    resetScreen();
-  }
+  if (display.textContent === '0' || shouldResetScreen) resetScreen();
+  if (number === '.' && display.textContent.includes('.')) return;
+  if (display.textContent === '' && number === '.') display.textContent = '0';
+  if (display.textContent.length >= 10) return;
+
   display.textContent += number;
-  if (display.textContent.length > 10) {
-    display.textContent = display.textContent.slice(10);
-  }
-  else {
-    display.textContent += number;
-  }
+
 }
+
 function resetScreen() {
   display.textContent = '';
   shouldResetScreen = false;
@@ -54,6 +45,11 @@ function clear() {
   shouldResetScreen = false;
 }
 
+function deleteNumber() {
+  display.textContent = display.textContent.toString().slice(0, -1);
+  if (display.textContent === '') display.textContent = '0';
+}
+
 function setOperator(operator) {
   if (currentOperator !== null) evaluate();
   firstOperand = display.textContent;
@@ -64,7 +60,7 @@ function setOperator(operator) {
 function evaluate() {
   if (currentOperator === null || shouldResetScreen) return;
   secondOperand = display.textContent;
-  let result = operate(currentOperator, firstOperand, secondOperand);
+  const result = operate(currentOperator, firstOperand, secondOperand);
   display.textContent = roundResult(result);
   currentOperator = null;
 }
@@ -73,7 +69,6 @@ function roundResult(number) {
   if (typeof number === 'string') return number;
   return Math.round(number * 1000) / 1000;
 }
-
 
 function operate(operator, a, b) {
   a = parseFloat(a);
@@ -84,9 +79,5 @@ function operate(operator, a, b) {
     case '*': return a * b;
     case '÷': return a / b;
     case '%': return a % b;
-    case '.':
-      if (a === 0) return b;
-      if (b === 0) return a;
-      return `${a}.${b}`;
-}
+  }
 }
